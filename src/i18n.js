@@ -1,0 +1,141 @@
+// 리포트 틀과 요약 문장의 언어별 글. 피드백 본문(왜·해 보세요·근거)은 catalog.js 에 있다.
+
+export const LANGS = ['ko', 'en'];
+
+export function detectLang() {
+  const loc = process.env.LC_ALL || process.env.LANG || Intl.DateTimeFormat().resolvedOptions().locale || 'ko';
+  return /^en/i.test(String(loc)) ? 'en' : 'ko';
+}
+
+const KO = {
+  locale: 'ko-KR',
+  dur: (m) => (m < 60 ? `${m}분` : `${Math.floor(m / 60)}시간${m % 60 ? ` ${m % 60}분` : ''}`),
+  q: (x) => `「${x}」`,
+  // 「고쳐 줘」 반복
+  firstReport: ' — 첫 보고',
+  streakRow: (n, d) => `이렇게 <b>${n}번 연속</b>, ${d}. 원인에 대한 짐작은 한 번도 없었어요.`,
+  firstAsk: (x) => `처음으로 원인을 물음 — ${x}`,
+  again: (n, x) => `다시 ${n}번 연속 — ${x}`,
+  goodRow: '상황을 한 번에 풀어서 보냄 ↓',
+  solvedRow: (d) => `해결. 처음 보고부터 약 ${d}.`,
+  goodWhen: '이날 가장 잘 쓴 메시지',
+  goodNote: (x) => `이 메시지는 상황을 풀어서 썼어요. 처음의 ${x}와 나란히 놓고 보세요 — <b>어디서</b>, <b>기대한 것</b>, <b>실제로 본 것</b>, <b>어디서는 괜찮은지</b>가 들어 있나요?`,
+  fair: (a, b) => `공정하게 말하면, 이 메시지를 보낼 무렵 답하는 모델도 ${a} 에서 ${b} 로 바뀌었어요. 그래서 해결이 메시지 덕인지 모델 덕인지는 기록만으로 가를 수 없어요. 다만 아래의 근거들은 모델과 상관없이 같은 말을 해요.`,
+  guessIntro: (count, projects, messages, d) => `이 기간에 원인 짐작 없이 「안 돼」·「여전히」가 3번 넘게 이어진 구간이 <b>${count}번</b> 있었어요(${projects}). 메시지 ${messages}개, 합치면 <b>약 ${d}</b>이에요. 가장 길었던 날을 보면 이래요.`,
+  ownRule: (file, text) => `작업 규칙에도 이미 같은 문장을 적어 두셨어요 — ${file}: 「${text}」`,
+  guessTry: '<b>두 번째로 같은 증상을 봤을 때</b>, 세 번째 「고쳐 줘」 대신 이렇게 보내 보세요.',
+  // 같은 부탁 반복
+  ruleHead: (rule, sessions, n) => `「${rule}」 — ${sessions}개 대화에서 ${n}번`,
+  ruleSource: (file, text, since, after) => `${file} 에 「${text}」라고 적혀 있는데도${since ? `(${since}에 생김)` : ''}, ${after ? `그 뒤로 ${after}번` : '다시'} 말해야 했어요.`,
+  ruleIntro: (anySource) => `같은 부탁을 여러 대화에서 되풀이했어요.${anySource ? ' 규칙으로 적어 둔 뒤에도요.' : ''}`,
+  ruleTry: (anySource) => `<b>${anySource ? '두 번 넘게 말한 규칙은 자동으로 확인되게 바꿔 보세요.' : '늘 지켜야 하는 것은 한 번 적어 두세요.'}</b> 에이전트에게 이렇게 맡기면 돼요.`,
+  // 테스트
+  testIntro: (repos, tests, missing, pct) => `${repos} 의 테스트 ${tests}개 중 ${missing}개(${pct}%)가 결과를 확인하는 코드 없이 실행만 해요.`,
+  // 틀
+  habitHead: (n) => `바꾸면 좋을 습관 ${n}`,
+  stepWhat: '무슨 일이 있었나',
+  stepWhy: '왜 문제인가',
+  stepTry: '이렇게 해 보세요',
+  stepCheck: '스스로 확인해 보기',
+  secretsHead: (title) => `먼저 확인할 것 — ${title}`,
+  secretsCount: (n, projects) => `${n}번(${projects}).`,
+  secretsNext: (x) => `다음부터는: 「${x}」`,
+  promiseHead: '다음 달에 해 볼 한 가지',
+  promiseSub: '한 번에 하나만 바꾸는 게 오래가요.',
+  promiseWhy: (cite) => `「다음에 [이런 상황]이면 [이렇게 한다]」로 정해 두면, 막연한 다짐보다 지킬 가능성이 눈에 띄게 높아요${cite}. 다음 달 돌아보기에서 이 상황이 몇 번 있었고 몇 번 지켰는지 보여 드릴게요.`,
+  inShort: '한 줄로 보면',
+  tocGood: (n) => `잘하고 있는 것 ${n}가지 — 계속 이렇게 하시면 돼요`,
+  tocHabit: (n) => `바꾸면 좋을 습관 ${n}가지 — 무슨 일이 있었는지, 왜 문제인지, 어떻게 바꾸면 되는지`,
+  tocPromise: '다음 달에 해 볼 한 가지',
+  stats: (p, s, m) => [`<b>${p}</b>개 프로젝트`, `<b>${s}</b>개 대화`, `<b>${m}</b>개 메시지`],
+  goodHead: '잘하고 있는 것',
+  goodSub: '칭찬이 아니라, 계속 지키면 좋은 이유가 있는 습관이에요.',
+  laterHead: '다음 달부터 함께 볼 것',
+  sourcesHead: '출처',
+  sourcesNote: '인용한 문장은 모두 원문과 대조한 것만 써요.',
+  foot: (git) => `이 돌아보기는 내 컴퓨터에 있는 AI 대화 기록${git ? '과 git 기록' : ''}만으로 만들었고, 다른 사람과 비교하지 않아요. 점수나 등급은 없어요. AI 없이 혼자 한 일(직접 읽기, 직접 고치기)은 기록에 안 남아서 반영되지 않아요.`,
+  preview: '미리보기: 아직 정확도를 재는 중인 피드백도 함께 보여 주고 있어요.',
+  made: '만든 날',
+  // 고르기·요약(pipeline)
+  title: (days) => `${days}일 동안 AI와 개발한 방식을 돌아봤어요`,
+  period: (a, b, days) => `${a} ~ ${b} · 최근 ${days}일`,
+  repos: (first, more) => `${first} 외 ${more}곳`,
+  guessGoodTitle: '막혀도 「고쳐 줘」만 반복하지 않아요',
+  guessGoodPhrase: '막히면 원인부터 짚는',
+  guessGoodHtml: (n) => `수정 요청 ${n}개 중, 원인 짐작 없이 같은 요청이 세 번 넘게 이어진 적이 없어요. 같은 실패를 계속 고치게 하면 시간이 새고, 도구 회사 지침도 두 번 넘게 바로잡았으면 새로 시작하라고 해요.`,
+  testGoodPhrase: '테스트에 결과 확인을 넣는',
+  phrase: { guessLoop: '<b>같은 증상을 「고쳐 줘」로만 반복한 구간</b>', repeatRule: '<b>여러 번 말한 부탁이 다시 어겨지는 일</b>', testChecks: '<b>결과를 확인하지 않는 테스트</b>' },
+  summary: (good, a, b) =>
+    `${good.length ? `${good.join(' 습관과 ')} 습관은 탄탄해요. ` : ''}${a ? `시간이 가장 많이 샌 곳은 ${a}이었고${b ? `, ${b}이 계속됐어요.` : '요.'}` : '이번에 짚을 만큼 크게 샌 곳은 보이지 않았어요.'}`,
+  notMeasured: {
+    guess: '막혔을 때 「고쳐 줘」만 반복했는지 (AI 분류를 켜면 보여요)',
+    rules: '같은 부탁을 여러 대화에서 되풀이했는지 (AI 분류를 켜면 보여요)',
+    tests: '테스트에 결과 확인이 들어 있는지 (git 기록을 읽으면 보여요)',
+  },
+};
+
+const EN = {
+  locale: 'en-US',
+  dur: (m) => (m < 60 ? `${m} min` : `${Math.floor(m / 60)} h${m % 60 ? ` ${m % 60} min` : ''}`),
+  q: (x) => `"${x}"`,
+  firstReport: ' — first report',
+  streakRow: (n, d) => `<b>${n} in a row</b> like this, ${d}. Not once a guess at the cause.`,
+  firstAsk: (x) => `First time asking for the cause — ${x}`,
+  again: (n, x) => `${n} in a row again — ${x}`,
+  goodRow: 'Laid out the whole situation in one message ↓',
+  solvedRow: (d) => `Solved. About ${d} after the first report.`,
+  goodWhen: 'the best-written message that day',
+  goodNote: (x) => `This message spells the situation out. Put it next to the earlier ${x} — does it say <b>where</b>, <b>what you expected</b>, <b>what you actually saw</b>, and <b>where it works fine</b>?`,
+  fair: (a, b) => `To be fair: around the time of this message the answering model also changed from ${a} to ${b}, so the logs alone can't tell whether the message or the model made the difference. The evidence below says the same thing regardless of the model.`,
+  guessIntro: (count, projects, messages, d) => `In this period there were <b>${count}</b> stretches where "still broken" ran three or more times with no guess at the cause (${projects}). ${messages} messages, about <b>${d}</b> in total. Here is the longest day.`,
+  ownRule: (file, text) => `Your own rules already say this — ${file}: "${text}"`,
+  guessTry: '<b>The second time you see the same symptom</b>, send this instead of a third "fix it".',
+  ruleHead: (rule, sessions, n) => `"${rule}" — ${n} times in ${sessions} sessions`,
+  ruleSource: (file, text, since, after) => `${file} already says "${text}"${since ? ` (added ${since})` : ''}, yet you had to say it ${after ? `${after} more time${after > 1 ? 's' : ''} after that` : 'again'}.`,
+  ruleIntro: (anySource) => `You repeated the same instruction across sessions${anySource ? ', even after writing it into your rules' : ''}.`,
+  ruleTry: (anySource) => `<b>${anySource ? 'Turn rules you have repeated more than twice into an automatic check.' : 'Write down what must always hold, once.'}</b> You can hand it to the agent like this.`,
+  testIntro: (repos, tests, missing, pct) => `Of ${tests} tests in ${repos}, ${missing} (${pct}%) only run code and never check the result.`,
+  habitHead: (n) => `Habit to change ${n}`,
+  stepWhat: 'What happened',
+  stepWhy: 'Why it matters',
+  stepTry: 'Try this',
+  stepCheck: 'Check yourself',
+  secretsHead: (title) => `Check first — ${title}`,
+  secretsCount: (n, projects) => `${n} time${n > 1 ? 's' : ''} (${projects}).`,
+  secretsNext: (x) => `Next time: "${x}"`,
+  promiseHead: 'One thing to try next month',
+  promiseSub: 'Changing one thing at a time is what lasts.',
+  promiseWhy: (cite) => `Plans of the form "if [situation], then [action]" are kept far more often than vague resolutions${cite}. Next month's look back will show how often the situation came up and how often you followed through.`,
+  inShort: 'In short',
+  tocGood: (n) => `${n} thing${n > 1 ? 's' : ''} you do well — keep doing ${n > 1 ? 'them' : 'it'}`,
+  tocHabit: (n) => `${n} habit${n > 1 ? 's' : ''} to change — what happened, why it matters, how to change it`,
+  tocPromise: 'One thing to try next month',
+  stats: (p, s, m) => [`<b>${p}</b> projects`, `<b>${s}</b> sessions`, `<b>${m}</b> messages`],
+  goodHead: 'What you do well',
+  goodSub: 'Not praise — habits worth keeping, and why.',
+  laterHead: 'Coming from next month',
+  sourcesHead: 'Sources',
+  sourcesNote: 'Every quote was checked against the original.',
+  foot: (git) => `This look back was made only from the AI conversation logs${git ? ' and git history' : ''} on your machine, and does not compare you with anyone. There are no scores or grades. Work you did without the AI (reading, editing by hand) is not in the logs, so it is not reflected.`,
+  preview: 'Preview: feedback whose accuracy is still being measured is shown too.',
+  made: 'Generated',
+  title: (days) => `How you developed with AI in the last ${days} days`,
+  period: (a, b, days) => `${a} – ${b} · last ${days} days`,
+  repos: (first, more) => `${first} and ${more} more`,
+  guessGoodTitle: 'When stuck, you don\'t just repeat "fix it"',
+  guessGoodPhrase: 'pinning down the cause when stuck',
+  guessGoodHtml: (n) => `Across ${n} fix requests, the same request never ran three times without a guess at the cause. Repeating fixes on the same failure leaks time, and tool makers advise starting fresh after two failed corrections.`,
+  testGoodPhrase: 'checking results in tests',
+  phrase: { guessLoop: '<b>stretches of "fix it" on the same symptom</b>', repeatRule: '<b>repeated instructions that kept getting broken</b>', testChecks: '<b>tests that never check the result</b>' },
+  summary: (good, a, b) =>
+    `${good.length ? `Your habit of ${good.join(' and ')} is solid. ` : ''}${a ? `Most time leaked in ${a}${b ? `, followed by ${b}.` : '.'}` : 'Nothing leaked enough time to point out this time.'}`,
+  notMeasured: {
+    guess: 'Whether you repeated "fix it" when stuck (turn on AI classification)',
+    rules: 'Whether you repeated the same instruction across sessions (turn on AI classification)',
+    tests: 'Whether your tests check results (read git history)',
+  },
+};
+
+export function ui(lang = 'ko') {
+  return lang === 'en' ? EN : KO;
+}

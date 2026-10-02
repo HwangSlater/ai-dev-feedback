@@ -78,3 +78,69 @@ export const LATER = [
   '처음 쓰는 기술을 다룰 때 설명을 구했는지, 결과만 받았는지',
   '에이전트가 쓴 코드 중 얼마가 버려지거나 곧 다시 고쳐졌는지',
 ];
+
+// ---------- English (--lang en) ----------
+// 영어 출처는 원문 문장을 그대로 옮겼다(docs/evidence.md 에서 ✔). 한국어 출처(카카오·컬리·우아한형제들)는 번역이다.
+
+export const FEEDBACK_EN = {
+  guessLoop: {
+    title: 'You keep asking "fix it" on the same symptom',
+    why: 'When you keep asking for fixes on the same failure, the failed attempts pile up in the conversation and the agent keeps circling inside the same frame. Tool makers and large engineering teams draw the same line for this reason.',
+    evidence: [
+      ['cc', 'Claude Code best practices: if you\'ve corrected Claude more than <b>twice</b> on the same issue, the context is cluttered with failed approaches — clear it and start fresh with a more specific prompt that incorporates what you learned. "A clean session with a better prompt almost always outperforms a long session with accumulated corrections."'],
+      ['cursor', 'Cursor best practices: "Revert the changes, refine the plan to be more specific about what you need, and run it again. This is often faster than fixing an in-progress agent, and produces cleaner results."'],
+      ['stripe', 'Stripe: "we only have at most <b>two rounds</b> of CI" — there are diminishing marginal returns for an LLM to run many rounds'],
+      ['kakao', 'Kakao (translated): in a production login failure, "the AI got stuck on a single problem and couldn\'t find a solution; in the end a developer found the root cause through log analysis and code review"'],
+      ['shen', 'Anthropic experiment: the gap between the AI and no-AI groups was <b>largest on debugging questions</b>; the group without AI hit more errors and got better at debugging (52 people, chat assistant)'],
+    ],
+    trySay: "Don't fix it yet. Give me three hypotheses for the cause of this symptom, and how to check each one (logs, a value to show on screen, steps to reproduce).",
+    tryNote: 'And when you report a symptom, include four things: where, what you expected, what you actually saw, and where it works fine.',
+    check: ['The next time you are about to type "still broken", did you count how many times you have already asked?', 'Did your last report say where it works fine?'],
+    promise: 'If the same symptom survives two fixes, ask for cause hypotheses and how to check them before asking for a third fix.',
+    ownRule: FEEDBACK.guessLoop.ownRule,
+  },
+  repeatRule: {
+    title: 'Rules you wrote down keep getting broken',
+    titleNoRule: 'You repeat the same instruction across sessions',
+    why: 'A written rule is a request: as the conversation or the rule file grows, it gets lost. An instruction you keep repeating is a sign it belongs in <b>an automatic check</b>, not in memory.',
+    whyNoRule: 'If you repeat an instruction in every session, the agent starts every new session without it. Write what must always hold into your rule file once, and move it into an automatic check if it must never be broken.',
+    evidence: [
+      ['cc', 'Claude Code best practices: "If Claude keeps doing something you don\'t want despite having a rule against it, the file is probably too long and the rule is getting lost." CLAUDE.md instructions are advisory while hooks are deterministic, so use hooks for actions that must happen every time'],
+      ['kurly', 'Kurly (translated): after "use Zustand, no Redux", the agent went back to Redux at turn 15 — early instructions fade as the conversation grows'],
+      ['woowa', 'Woowa Brothers (translated): rules that lived only in documents were turned into tests that block merges; existing violations were frozen and only new ones blocked, with zero new violations since. An AI agent did much of the conversion'],
+      ['bockeler', 'Thoughtworks: surround the agent with guides that steer it before it acts and sensors that check after it acts — computational sensors such as tests and linters are deterministic and reliable'],
+    ],
+    trySay: (rule) => `I keep telling you "${rule}". Write an automatic check that stops or redoes the work when this isn't followed.`,
+    trySayNoRule: (rule) => `Add "${rule}" to the rule file as a one-line rule that always applies.`,
+    check: ['Did you give the same correction twice this week? Where is it written down, and what checks it?'],
+    promise: 'The second time you repeat an instruction, move it into the rule file or an automatic check before a third time.',
+  },
+  testChecks: {
+    goodTitle: 'Your tests check results',
+    goodWhy: (r) => `Of ${r.tests.toLocaleString('en-US')} tests in ${r.repos}, only ${r.missing} (${r.pct}%) just check that nothing throws without checking the result. One study found weak or missing result checks in 80% of agent-written test patches. Almost none of your tests run code without checking anything.`,
+    title: 'Many tests never check the result',
+    why: 'A test that runs code without checking the result passes even when the code is wrong. This is especially common in tests agents write.',
+    evidence: [['banik', 'A study of 33,596 agent pull requests: "80.2% of test patches contain weak or no explicit oracle signals"; tests with strong checks were more likely to be merged']],
+    trySay: 'Before writing tests for this feature, list the cases that should fail. After writing them, deliberately break the code and show me that the tests fail.',
+    check: ['In the last tests you accepted, how many fail when the code is deliberately broken?'],
+    promise: 'When the agent writes tests, break the code once on purpose before accepting them.',
+    goodSource: 'banik',
+  },
+  secrets: {
+    title: 'You pasted secrets into the chat',
+    why: 'Values pasted into the chat stay in the conversation log on your machine and are sent to the AI service. That cannot be undone without rotating the key.',
+    trySay: "I put the key in .env (or an environment variable) named XX_API_KEY. Don't ask for the value; read it by that name.",
+    action: 'Rotating keys you already pasted is the safe move.',
+  },
+};
+
+export const LATER_EN = [
+  'How often the agent said "done" when it wasn\'t',
+  'Whether you asked for explanations when working with an unfamiliar technology, or just took the result',
+  'How much agent-written code was thrown away or rewritten soon after',
+];
+
+// 언어별 피드백 문장과 「다음 달부터 함께 볼 것」.
+export function feedbackFor(lang = 'ko') {
+  return lang === 'en' ? { F: FEEDBACK_EN, LATER: LATER_EN } : { F: FEEDBACK, LATER };
+}

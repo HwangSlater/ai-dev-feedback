@@ -32,7 +32,9 @@ Otherwise ask these at once:
 
 ## 3. Run
 
-`AF --yes --days <7|30> [--project a,b] [--no-git] [--no-ai] [--focus stuck|verify|delegate|harness]`
+`AF --yes --days <7|30> [--project a,b] [--no-git] [--no-ai] [--focus stuck|verify|delegate|harness] --lang <ko|en>`
+
+Pass `--lang` matching the language the user is writing in.
 
 Use a 10-minute timeout. The first run with AI over 30 days takes one to three minutes; later runs reuse the cache.
 

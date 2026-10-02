@@ -1,6 +1,6 @@
 # 설계 — AI 개발 능력을 기르는 피드백 도구
 
-2026-10-02. 근거는 `evidence.md`, 보이는 모습은 `images/report-ko.png`(지어낸 데이터로 그린 예시, `scripts/demo.mjs`).
+2026-10-02. 근거는 `evidence.md`, 보이는 모습은 `images/report-ko.png`·`report-en.png`(지어낸 데이터로 그린 예시, `scripts/demo.mjs`). 리포트·질문은 한국어와 영어(`--lang`).
 
 ## 무엇을 하는 도구인가
 

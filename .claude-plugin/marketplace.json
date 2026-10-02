@@ -1,0 +1,13 @@
+{
+  "name": "ai-dev-feedback",
+  "owner": {
+    "name": "HwangSlater"
+  },
+  "plugins": [
+    {
+      "name": "ai-dev-feedback",
+      "source": "./",
+      "description": "A monthly look back at how you develop with AI coding agents, with feedback backed by vendor guidance, company practice and research."
+    }
+  ]
+}

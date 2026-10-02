@@ -1,0 +1,10 @@
+{
+  "name": "ai-dev-feedback",
+  "version": "0.1.0",
+  "description": "Evidence-based feedback on how you develop with AI coding agents: where time leaks, what to change, and why.",
+  "author": {
+    "name": "HwangSlater"
+  },
+  "repository": "https://github.com/HwangSlater/ai-dev-feedback",
+  "license": "MIT"
+}

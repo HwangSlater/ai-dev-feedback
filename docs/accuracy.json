@@ -1,0 +1,43 @@
+{
+  "testChecks": {
+    "accuracy": 1,
+    "judged": 17,
+    "skipped": 0,
+    "date": "2026-10-02",
+    "by": "claude",
+    "note": "찾은 것을 모두 열어 봄 — 전부 결과 확인 없이 오류가 안 나는지만 보는 테스트였음. 놓친 것(재현율)은 아직 안 잼"
+  },
+  "secrets": {
+    "accuracy": 1,
+    "judged": 4,
+    "skipped": 0,
+    "date": "2026-10-02",
+    "by": "claude",
+    "note": "값을 가린 앞뒤 문맥으로 확인. 표본이 작음"
+  },
+  "guessLoop": {
+    "accuracy": 1,
+    "judged": 5,
+    "skipped": 0,
+    "date": "2026-10-02",
+    "by": "user",
+    "basis": "dev"
+  },
+  "repeatRule": {
+    "accuracy": 1,
+    "judged": 13,
+    "skipped": 0,
+    "date": "2026-10-02",
+    "by": "user",
+    "basis": "dev"
+  },
+  "repeatRuleSource": {
+    "accuracy": 1,
+    "judged": 2,
+    "skipped": 0,
+    "date": "2026-10-02",
+    "by": "user",
+    "basis": "dev"
+  },
+  "note": "모두 만든 사람의 기록으로 잰 개발용 값. 판정을 보고 규칙을 고친 뒤 같은 기록으로 다시 잰 것이라 실제보다 후하다 — docs/accuracy.md"
+}

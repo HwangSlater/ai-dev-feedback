@@ -1,0 +1,46 @@
+{
+  "name": "ai-dev-feedback",
+  "version": "0.1.0",
+  "description": "Evidence-based feedback on how you develop with AI coding agents, from your own Claude Code and Codex logs.",
+  "type": "module",
+  "bin": {
+    "ai-dev-feedback": "bin/ai-dev-feedback.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "scripts",
+    "docs",
+    "skills",
+    ".claude-plugin",
+    "README.md",
+    "README.ko.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "start": "node bin/ai-dev-feedback.js",
+    "test": "node --test test/*.test.js",
+    "demo": "node scripts/demo.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HwangSlater/ai-dev-feedback.git"
+  },
+  "keywords": [
+    "claude-code",
+    "codex",
+    "ai",
+    "developer",
+    "feedback",
+    "self-reflection"
+  ],
+  "license": "MIT",
+  "author": "HwangSlater (https://github.com/HwangSlater)",
+  "homepage": "https://github.com/HwangSlater/ai-dev-feedback#readme",
+  "bugs": {
+    "url": "https://github.com/HwangSlater/ai-dev-feedback/issues"
+  }
+}
